@@ -19,3 +19,5 @@ jobs:
 
       - name: Generate LOC graph
         uses: ./  # Use local action from this repository
+        with:
+          theme: dark
