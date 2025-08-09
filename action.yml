@@ -20,12 +20,10 @@ runs:
           git fetch --unshallow --tags
         fi
 
-    - name: Install cloc & Python
+    - name: Install cloc
       shell: bash
       run: |
-        sudo apt-get update
-        sudo apt-get install -y cloc python3 python3-pip
-        python3 -m pip install --upgrade pip
+        sudo apt-get install -y cloc --no-install-recommends
 
     - name: Run LOC graph generator
       shell: bash
