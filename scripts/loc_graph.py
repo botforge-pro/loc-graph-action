@@ -70,7 +70,20 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
 
     xs = list(range(len(points)))
     ys = [p["loc"] for p in points]
-    ymin, ymax = 0, max(ys) or 1
+    ymin = 0
+    
+    # Calculate nice round ymax first, before defining sy function
+    def nice_round(n):
+        """Round to nice numbers like 10, 25, 50, 100, 250, 500, 1000, etc."""
+        if n <= 10: return 10
+        magnitude = 10 ** (len(str(int(n))) - 1)
+        normalized = n / magnitude
+        if normalized <= 1: return magnitude
+        elif normalized <= 2.5: return int(2.5 * magnitude)
+        elif normalized <= 5: return 5 * magnitude
+        else: return 10 * magnitude
+    
+    ymax = nice_round(max(ys) * 1.1) if max(ys) > 0 else 100
 
     def sx(i): return pad + i * (w - 2*pad) / max(1, len(xs)-1)
     def sy(v): return h - pad - (v - ymin) * (h - 2*pad) / (ymax - ymin)
@@ -101,21 +114,7 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
         if len(points) <= 10 or i % max(1, len(points) // 10) == 0:
             date_labels.append(f'<text x="{x:.2f}" y="{h-pad+15:.2f}" font-size="9" fill="{text_color}" text-anchor="middle" transform="rotate(-45 {x:.2f} {h-pad+15:.2f})">{label}</text>')
 
-    # Y grid with nice round numbers
-    def nice_round(n):
-        """Round to nice numbers like 10, 25, 50, 100, 250, 500, 1000, etc."""
-        if n <= 10: return 10
-        magnitude = 10 ** (len(str(int(n))) - 1)
-        normalized = n / magnitude
-        if normalized <= 1: return magnitude
-        elif normalized <= 2.5: return int(2.5 * magnitude)
-        elif normalized <= 5: return 5 * magnitude
-        else: return 10 * magnitude
-    
-    # Adjust ymax to nice round number
-    ymax = nice_round(max(ys) * 1.1) if max(ys) > 0 else 100
-    
-    # Generate grid with 5 nice tick values
+    # Y grid - Generate grid with nice tick values
     grid = []
     for i in range(6):
         val = int(ymax * i / 5)
