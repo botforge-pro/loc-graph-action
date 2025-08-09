@@ -56,7 +56,7 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
     if theme == "dark":
         bg_color = "#0d1117"  # GitHub dark background
         grid_color = "#30363d"
-        axis_color = "#58a6ff"
+        axis_color = "#30363d"  # Same as grid for consistency
         line_color = "#3fb950"  # Green
         text_color = "#c9d1d9"
         point_color = "#3fb950"
@@ -77,10 +77,24 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
 
     path = "M " + " L ".join(f"{sx(i):.2f} {sy(ys[i]):.2f}" for i in range(len(xs)))
 
-    # Y grid (6 ticks)
+    # Y grid with nice round numbers
+    def nice_round(n):
+        """Round to nice numbers like 10, 25, 50, 100, 250, 500, 1000, etc."""
+        if n <= 10: return 10
+        magnitude = 10 ** (len(str(int(n))) - 1)
+        normalized = n / magnitude
+        if normalized <= 1: return magnitude
+        elif normalized <= 2.5: return int(2.5 * magnitude)
+        elif normalized <= 5: return 5 * magnitude
+        else: return 10 * magnitude
+    
+    # Adjust ymax to nice round number
+    ymax = nice_round(max(ys) * 1.1) if max(ys) > 0 else 100
+    
+    # Generate grid with 5 nice tick values
     grid = []
-    for t in range(6):
-        val = int(ymin + t*(ymax - ymin)/5)
+    for i in range(6):
+        val = int(ymax * i / 5)
         y = sy(val)
         grid.append(f'<line x1="{pad}" y1="{y:.2f}" x2="{w-pad}" y2="{y:.2f}" stroke="{grid_color}"/>')
         grid.append(f'<text x="{pad-8}" y="{y+4:.2f}" font-size="10" fill="{text_color}" text-anchor="end">{val}</text>')
