@@ -3,7 +3,9 @@
 # Generates an SVG chart of LOC over time using cloc per commit.
 # Caches results in .github/loc_history.json to avoid recomputation.
 
-import json, os, subprocess
+import json
+import os
+import subprocess
 from datetime import datetime
 
 # Fixed paths to match action.yml defaults
@@ -75,13 +77,18 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
     # Calculate nice round ymax first, before defining sy function
     def nice_round(n):
         """Round to nice numbers like 10, 25, 50, 100, 250, 500, 1000, etc."""
-        if n <= 10: return 10
+        if n <= 10:
+            return 10
         magnitude = 10 ** (len(str(int(n))) - 1)
         normalized = n / magnitude
-        if normalized <= 1: return magnitude
-        elif normalized <= 2.5: return int(2.5 * magnitude)
-        elif normalized <= 5: return 5 * magnitude
-        else: return 10 * magnitude
+        if normalized <= 1:
+            return magnitude
+        elif normalized <= 2.5:
+            return int(2.5 * magnitude)
+        elif normalized <= 5:
+            return 5 * magnitude
+        else:
+            return 10 * magnitude
     
     ymax = nice_round(max(ys) * 1.1) if max(ys) > 0 else 100
 
@@ -121,9 +128,6 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
         y = sy(val)
         grid.append(f'<line x1="{pad}" y1="{y:.2f}" x2="{w-pad}" y2="{y:.2f}" stroke="{grid_color}"/>')
         grid.append(f'<text x="{pad-8}" y="{y+4:.2f}" font-size="10" fill="{text_color}" text-anchor="end">{val}</text>')
-
-    last = points[-1]
-    last_label = f'{last["date"][:10]} · {last["loc"]} LOC'
 
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h+30}">
   <rect width="100%" height="100%" fill="{bg_color}"/>
