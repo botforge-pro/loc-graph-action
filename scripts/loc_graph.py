@@ -129,7 +129,7 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
         grid.append(f'<line x1="{pad}" y1="{y:.2f}" x2="{w-pad}" y2="{y:.2f}" stroke="{grid_color}"/>')
         grid.append(f'<text x="{pad-8}" y="{y+4:.2f}" font-size="10" fill="{text_color}" text-anchor="end">{val}</text>')
 
-    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h+30}">
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h+30}" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
   <rect width="100%" height="100%" fill="{bg_color}"/>
   <g>
     {''.join(x_grid)}
