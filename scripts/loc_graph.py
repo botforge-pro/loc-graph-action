@@ -51,6 +51,23 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
         open(OUTPUT_SVG, "w", encoding="utf-8").write(svg)
         return
 
+    # Theme colors
+    theme = os.environ.get("THEME", "light").lower()
+    if theme == "dark":
+        bg_color = "#0d1117"  # GitHub dark background
+        grid_color = "#30363d"
+        axis_color = "#58a6ff"
+        line_color = "#3fb950"  # Green
+        text_color = "#c9d1d9"
+        point_color = "#3fb950"
+    else:
+        bg_color = "white"
+        grid_color = "#e5e7eb"
+        axis_color = "#9ca3af"
+        line_color = "#111827"
+        text_color = "#111827"
+        point_color = "#111827"
+
     xs = list(range(len(points)))
     ys = [p["loc"] for p in points]
     ymin, ymax = 0, max(ys) or 1
@@ -65,20 +82,20 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
     for t in range(6):
         val = int(ymin + t*(ymax - ymin)/5)
         y = sy(val)
-        grid.append(f'<line x1="{pad}" y1="{y:.2f}" x2="{w-pad}" y2="{y:.2f}" stroke="#e5e7eb"/>')
-        grid.append(f'<text x="{pad-8}" y="{y+4:.2f}" font-size="10" text-anchor="end">{val}</text>')
+        grid.append(f'<line x1="{pad}" y1="{y:.2f}" x2="{w-pad}" y2="{y:.2f}" stroke="{grid_color}"/>')
+        grid.append(f'<text x="{pad-8}" y="{y+4:.2f}" font-size="10" fill="{text_color}" text-anchor="end">{val}</text>')
 
     last = points[-1]
     last_label = f'{last["date"][:10]} · {last["loc"]} LOC'
 
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}">
-  <rect width="100%" height="100%" fill="white"/>
+  <rect width="100%" height="100%" fill="{bg_color}"/>
   <g>
-    <line x1="{pad}" y1="{h-pad}" x2="{w-pad}" y2="{h-pad}" stroke="#9ca3af"/>
-    <line x1="{pad}" y1="{pad}"   x2="{pad}"   y2="{h-pad}" stroke="#9ca3af"/>
+    <line x1="{pad}" y1="{h-pad}" x2="{w-pad}" y2="{h-pad}" stroke="{axis_color}"/>
+    <line x1="{pad}" y1="{pad}"   x2="{pad}"   y2="{h-pad}" stroke="{axis_color}"/>
     {''.join(grid)}
-    <path d="{path}" fill="none" stroke="#111827" stroke-width="2"/>
-    <circle cx="{sx(len(xs)-1):.2f}" cy="{sy(ys[-1]):.2f}" r="3" fill="#111827"/>
+    <path d="{path}" fill="none" stroke="{line_color}" stroke-width="2"/>
+    <circle cx="{sx(len(xs)-1):.2f}" cy="{sy(ys[-1]):.2f}" r="3" fill="{point_color}"/>
   </g>
 </svg>'''
     open(OUTPUT_SVG, "w", encoding="utf-8").write(svg)

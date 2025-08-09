@@ -31,6 +31,8 @@ jobs:
 
       - name: Generate LOC graph
         uses: botforge-pro/loc-graph-action@v0.1.0
+        with:
+          theme: dark  # Optional: 'dark' or 'light'
 ```
 
 2.	Commit and push the workflow file.
