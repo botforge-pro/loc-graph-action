@@ -11,7 +11,7 @@ OUTPUT_SVG = ".github/loc-history.svg"
 OUTPUT_JSON = ".github/loc_history.json"
 
 # Directories commonly excluded from LOC counts
-EXCLUDE_DIRS = ["vendor", "node_modules", "build", "dist", "Pods", ".git"]
+EXCLUDE_DIRS = [".git", ".github"]
 
 def sh(cmd):
     return subprocess.check_output(cmd, text=True).strip()
@@ -104,7 +104,7 @@ def main():
     finally:
         run(["git", "checkout", "--quiet", current_ref])
 
-    hist.sort(key=lambda e: e["date"])
+    hist.sort(key=lambda e: datetime.fromisoformat(e["date"]))
     if updated or not os.path.exists(OUTPUT_SVG):
         save_history(hist)
         generate_svg(hist)
