@@ -41,3 +41,9 @@ jobs:
 ```
 <img src=".github/loc-history.svg" alt="Lines of code over time">
 ```
+
+## Example
+
+This repository uses its own action to track LOC over time:
+
+<img src=".github/loc-history.svg" alt="Lines of code over time">
