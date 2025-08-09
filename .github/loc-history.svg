@@ -1,12 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="260">
   <rect width="100%" height="100%" fill="white"/>
   <g>
-    <text x="40" y="28" font-size="14" font-weight="bold">Lines of code over time</text>
-    <text x="860" y="28" font-size="12" text-anchor="end">2025-08-10 · 146 LOC</text>
     <line x1="40" y1="220" x2="860" y2="220" stroke="#9ca3af"/>
     <line x1="40" y1="40"   x2="40"   y2="220" stroke="#9ca3af"/>
     <line x1="40" y1="220.00" x2="860" y2="220.00" stroke="#e5e7eb"/><text x="32" y="224.00" font-size="10" text-anchor="end">0</text><line x1="40" y1="184.71" x2="860" y2="184.71" stroke="#e5e7eb"/><text x="32" y="188.71" font-size="10" text-anchor="end">40</text><line x1="40" y1="148.53" x2="860" y2="148.53" stroke="#e5e7eb"/><text x="32" y="152.53" font-size="10" text-anchor="end">81</text><line x1="40" y1="112.35" x2="860" y2="112.35" stroke="#e5e7eb"/><text x="32" y="116.35" font-size="10" text-anchor="end">122</text><line x1="40" y1="76.18" x2="860" y2="76.18" stroke="#e5e7eb"/><text x="32" y="80.18" font-size="10" text-anchor="end">163</text><line x1="40" y1="40.00" x2="860" y2="40.00" stroke="#e5e7eb"/><text x="32" y="44.00" font-size="10" text-anchor="end">204</text>
-    <path d="M 40.00 218.24 L 142.50 182.06 L 245.00 119.41 L 347.50 92.06 L 450.00 74.41 L 552.50 40.00 L 655.00 41.76 L 757.50 91.18 L 860.00 91.18" fill="none" stroke="#111827" stroke-width="2"/>
+    <path d="M 40.00 218.24 L 122.00 182.06 L 204.00 119.41 L 286.00 92.06 L 368.00 74.41 L 450.00 40.00 L 532.00 41.76 L 614.00 91.18 L 696.00 91.18 L 778.00 91.18 L 860.00 91.18" fill="none" stroke="#111827" stroke-width="2"/>
     <circle cx="860.00" cy="91.18" r="3" fill="#111827"/>
   </g>
 </svg>
