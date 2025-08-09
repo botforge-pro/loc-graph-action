@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="260">
   <rect width="100%" height="100%" fill="#0d1117"/>
   <g>
-    <line x1="40" y1="220" x2="860" y2="220" stroke="#58a6ff"/>
-    <line x1="40" y1="40"   x2="40"   y2="220" stroke="#58a6ff"/>
-    <line x1="40" y1="220.00" x2="860" y2="220.00" stroke="#30363d"/><text x="32" y="224.00" font-size="10" fill="#c9d1d9" text-anchor="end">0</text><line x1="40" y1="184.71" x2="860" y2="184.71" stroke="#30363d"/><text x="32" y="188.71" font-size="10" fill="#c9d1d9" text-anchor="end">40</text><line x1="40" y1="148.53" x2="860" y2="148.53" stroke="#30363d"/><text x="32" y="152.53" font-size="10" fill="#c9d1d9" text-anchor="end">81</text><line x1="40" y1="112.35" x2="860" y2="112.35" stroke="#30363d"/><text x="32" y="116.35" font-size="10" fill="#c9d1d9" text-anchor="end">122</text><line x1="40" y1="76.18" x2="860" y2="76.18" stroke="#30363d"/><text x="32" y="80.18" font-size="10" fill="#c9d1d9" text-anchor="end">163</text><line x1="40" y1="40.00" x2="860" y2="40.00" stroke="#30363d"/><text x="32" y="44.00" font-size="10" fill="#c9d1d9" text-anchor="end">204</text>
-    <path d="M 40.00 218.24 L 98.57 182.06 L 157.14 119.41 L 215.71 92.06 L 274.29 74.41 L 332.86 40.00 L 391.43 41.76 L 450.00 91.18 L 508.57 91.18 L 567.14 91.18 L 625.71 91.18 L 684.29 91.18 L 742.86 72.65 L 801.43 72.65 L 860.00 72.65" fill="none" stroke="#3fb950" stroke-width="2"/>
-    <circle cx="860.00" cy="72.65" r="3" fill="#3fb950"/>
+    <line x1="40" y1="220" x2="860" y2="220" stroke="#30363d"/>
+    <line x1="40" y1="40"   x2="40"   y2="220" stroke="#30363d"/>
+    <line x1="40" y1="220.00" x2="860" y2="220.00" stroke="#30363d"/><text x="32" y="224.00" font-size="10" fill="#c9d1d9" text-anchor="end">0</text><line x1="40" y1="184.00" x2="860" y2="184.00" stroke="#30363d"/><text x="32" y="188.00" font-size="10" fill="#c9d1d9" text-anchor="end">50</text><line x1="40" y1="148.00" x2="860" y2="148.00" stroke="#30363d"/><text x="32" y="152.00" font-size="10" fill="#c9d1d9" text-anchor="end">100</text><line x1="40" y1="112.00" x2="860" y2="112.00" stroke="#30363d"/><text x="32" y="116.00" font-size="10" fill="#c9d1d9" text-anchor="end">150</text><line x1="40" y1="76.00" x2="860" y2="76.00" stroke="#30363d"/><text x="32" y="80.00" font-size="10" fill="#c9d1d9" text-anchor="end">200</text><line x1="40" y1="40.00" x2="860" y2="40.00" stroke="#30363d"/><text x="32" y="44.00" font-size="10" fill="#c9d1d9" text-anchor="end">250</text>
+    <path d="M 40.00 218.24 L 91.25 182.06 L 142.50 119.41 L 193.75 92.06 L 245.00 74.41 L 296.25 40.00 L 347.50 41.76 L 398.75 91.18 L 450.00 91.18 L 501.25 91.18 L 552.50 91.18 L 603.75 91.18 L 655.00 72.65 L 706.25 72.65 L 757.50 72.65 L 808.75 72.65 L 860.00 64.71" fill="none" stroke="#3fb950" stroke-width="2"/>
+    <circle cx="860.00" cy="93.28" r="3" fill="#3fb950"/>
   </g>
 </svg>
