@@ -90,7 +90,7 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
         else:
             return 10 * magnitude
     
-    ymax = nice_round(max(ys) * 1.1) if max(ys) > 0 else 100
+    ymax = nice_round(max(ys) * 1.2) if max(ys) > 0 else 100
 
     def sx(i): return pad + i * (w - 2*pad) / max(1, len(xs)-1)
     def sy(v): return h - pad - (v - ymin) * (h - 2*pad) / (ymax - ymin)
