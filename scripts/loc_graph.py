@@ -74,8 +74,6 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}">
   <rect width="100%" height="100%" fill="white"/>
   <g>
-    <text x="{pad}" y="{pad-12}" font-size="14" font-weight="bold">{title}</text>
-    <text x="{w-pad}" y="{pad-12}" font-size="12" text-anchor="end">{last_label}</text>
     <line x1="{pad}" y1="{h-pad}" x2="{w-pad}" y2="{h-pad}" stroke="#9ca3af"/>
     <line x1="{pad}" y1="{pad}"   x2="{pad}"   y2="{h-pad}" stroke="#9ca3af"/>
     {''.join(grid)}
