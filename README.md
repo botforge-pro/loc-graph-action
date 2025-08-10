@@ -16,8 +16,6 @@ on:
   push:
     branches: [ main, master ]
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * *'  # Daily at midnight UTC
 
 permissions:
   contents: write
