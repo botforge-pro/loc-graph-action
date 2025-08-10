@@ -106,8 +106,8 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
     max_val = max(ys) if max(ys) > 0 else 100
     ymax = nice_round(max_val)
     
-    # If we're too close to the top (>90% of ymax), add one more grid step
-    if max_val > ymax * 0.9:
+    # Only add more space if we're using more than 80% of current ymax
+    if max_val > ymax * 0.8:
         # Find the next nice number after ymax
         ymax = nice_round(ymax + 1)
 
