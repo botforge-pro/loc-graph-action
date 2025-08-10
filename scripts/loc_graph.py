@@ -104,12 +104,16 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
     ymin = 0
     # Round up the max value to next nice number, ensuring some padding
     max_val = max(ys) if max(ys) > 0 else 100
+    
+    # First, get the nice round number at or above max_val
     ymax = nice_round(max_val)
     
-    # Only add more space if we're using more than 80% of current ymax
-    if max_val > ymax * 0.8:
-        # Find the next nice number after ymax
-        ymax = nice_round(ymax + 1)
+    # If max_val equals ymax (exact match), we need the next level
+    # Otherwise check if we're using more than 80%
+    if max_val == ymax or max_val > ymax * 0.8:
+        # Find the next nice number in the sequence
+        # Add a small increment to ensure we get the next level
+        ymax = nice_round(ymax * 1.1 + 1)
 
     def sx(i): return pad + i * (w - 2*pad) / max(1, len(xs)-1)
     def sy(v): return h - pad - (v - ymin) * (h - 2*pad) / (ymax - ymin)
