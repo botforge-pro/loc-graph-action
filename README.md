@@ -62,6 +62,31 @@ on:
 <img src=".github/loc-history.svg" alt="Lines of code over time">
 ```
 
+## Configuration Options
+
+All inputs are optional:
+
+| Input | Description | Default |
+|-------|-------------|---------|
+| `output_svg` | Path to output SVG file | `.github/loc-history.svg` |
+| `output_json` | Path to cached LOC history JSON | `.github/loc_history.json` |
+| `theme` | Graph theme: `light` or `dark` | `light` |
+| `date_format` | Date format for multi-day projects (Python strftime) | `%d.%m.%Y` |
+| `time_format` | Time format for same-day commits (Python strftime) | `%H:%M` |
+
+### Example with all options:
+
+```yaml
+- name: Generate LOC graph
+  uses: botforge-pro/loc-graph-action@main
+  with:
+    output_svg: "docs/images/loc-chart.svg"
+    output_json: "docs/data/loc-cache.json"
+    theme: dark
+    date_format: "%Y-%m-%d"  # 2024-03-15
+    time_format: "%I:%M %p"  # 03:45 PM
+```
+
 ## Example
 
 This repository uses its own action to track LOC over time:
