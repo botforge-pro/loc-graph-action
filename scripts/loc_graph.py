@@ -45,6 +45,35 @@ def save_history(hist):
     with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
         json.dump(hist, f, ensure_ascii=False, indent=2)
 
+def nice_round(n):
+    """Round up to nice numbers like 10, 20, 50, 100, 200, 300, 500, 1000, etc."""
+    if n <= 0:
+        return 10
+    
+    # Nice round numbers sequence
+    steps = [1, 2, 3, 5, 10]
+    
+    # Find magnitude (10, 100, 1000, etc)
+    magnitude = 10 ** (len(str(int(n))) - 1)
+    
+    # Find the nice number
+    for step in steps:
+        nice = step * magnitude
+        if n <= nice:
+            return nice
+    
+    # If nothing fits, go to next magnitude
+    return 10 * magnitude
+
+def format_number(n):
+    """Format numbers: 1000 -> 1k, 1000000 -> 1M"""
+    if n >= 1000000:
+        return f"{n/1000000:.0f}M" if n % 1000000 == 0 else f"{n/1000000:.1f}M"
+    elif n >= 1000:
+        return f"{n/1000:.0f}k" if n % 1000 == 0 else f"{n/1000:.1f}k"
+    else:
+        return str(n)
+
 def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
     """Write simple static SVG line chart to OUTPUT_SVG."""
     os.makedirs(os.path.dirname(OUTPUT_SVG), exist_ok=True)
@@ -73,26 +102,11 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
     xs = list(range(len(points)))
     ys = [p["loc"] for p in points]
     ymin = 0
-    
-    # Calculate nice round ymax first, before defining sy function
-    def nice_round(n):
-        """Round to nice numbers like 10, 25, 50, 100, 250, 500, 1000, etc."""
-        if n <= 10:
-            return 10
-        magnitude = 10 ** (len(str(int(n))) - 1)
-        normalized = n / magnitude
-        if normalized <= 1:
-            return magnitude
-        elif normalized <= 2:
-            return 2 * magnitude
-        elif normalized <= 2.5:
-            return int(2.5 * magnitude)
-        elif normalized <= 5:
-            return 5 * magnitude
-        else:
-            return 10 * magnitude
-    
-    ymax = nice_round(max(ys) * 1.1) if max(ys) > 0 else 100
+    # Round up the max value to next nice number
+    ymax = nice_round(max(ys)) if max(ys) > 0 else 100
+    # Add small padding if we're exactly at the max
+    if ymax == max(ys):
+        ymax = nice_round(max(ys) + 1)
 
     def sx(i): return pad + i * (w - 2*pad) / max(1, len(xs)-1)
     def sy(v): return h - pad - (v - ymin) * (h - 2*pad) / (ymax - ymin)
@@ -127,15 +141,6 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
             date_labels.append(f'<text x="{x:.2f}" y="{h-pad+15:.2f}" font-size="9" fill="{text_color}" text-anchor="middle" transform="rotate(-45 {x:.2f} {h-pad+15:.2f})">{label}</text>')
 
     # Y grid - Generate grid with nice tick values
-    def format_number(n):
-        """Format numbers: 1000 -> 1k, 1000000 -> 1M"""
-        if n >= 1000000:
-            return f"{n/1000000:.0f}M" if n % 1000000 == 0 else f"{n/1000000:.1f}M"
-        elif n >= 1000:
-            return f"{n/1000:.0f}k" if n % 1000 == 0 else f"{n/1000:.1f}k"
-        else:
-            return str(n)
-    
     grid = []
     for i in range(6):
         val = int(ymax * i / 5)
