@@ -14,6 +14,14 @@ inputs:
     description: "Graph theme: 'light' or 'dark'"
     default: "light"
     required: false
+  date_format:
+    description: "Date format for multi-day projects (Python strftime)"
+    default: "%d.%m.%Y"
+    required: false
+  time_format:
+    description: "Time format for same-day commits (Python strftime)"
+    default: "%H:%M"
+    required: false
 runs:
   using: "composite"
   steps:
@@ -32,7 +40,10 @@ runs:
     - name: Run LOC graph generator
       shell: bash
       run: |
-        THEME="${{ inputs.theme }}" python3 "${GITHUB_ACTION_PATH}/scripts/loc_graph.py"
+        THEME="${{ inputs.theme }}" \
+        DATE_FORMAT="${{ inputs.date_format }}" \
+        TIME_FORMAT="${{ inputs.time_format }}" \
+        python3 "${GITHUB_ACTION_PATH}/scripts/loc_graph.py"
 
     - name: Commit artifacts if changed
       shell: bash

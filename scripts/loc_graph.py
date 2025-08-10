@@ -101,9 +101,14 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
     x_grid = []
     date_labels = []
     
-    # Determine date format based on whether dates repeat
-    dates_only = [p["date"][:10] for p in points]
-    use_time = len(dates_only) != len(set(dates_only))  # Show time if dates repeat
+    # Get date/time formats from environment
+    date_format = os.environ.get("DATE_FORMAT", "%d.%m.%Y")
+    time_format = os.environ.get("TIME_FORMAT", "%H:%M")
+    
+    # Determine if project spans multiple days
+    first_date = datetime.fromisoformat(points[0]["date"]).date()
+    last_date = datetime.fromisoformat(points[-1]["date"]).date()
+    use_time = (last_date - first_date).days <= 2  # Use time for projects ≤2 days
     
     # Add vertical lines and date labels for selected points
     for i, point in enumerate(points):
@@ -113,11 +118,9 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
             # Vertical grid line
             x_grid.append(f'<line x1="{x:.2f}" y1="{pad}" x2="{x:.2f}" y2="{h-pad}" stroke="{grid_color}" opacity="0.5"/>')
             
-            # Date label (rotate for better fit)
-            if use_time:
-                label = point["date"][11:16]  # Show HH:MM if dates repeat
-            else:
-                label = point["date"][5:10]  # Show MM-DD
+            # Format date label
+            dt = datetime.fromisoformat(point["date"])
+            label = dt.strftime(time_format if use_time else date_format)
             
             date_labels.append(f'<text x="{x:.2f}" y="{h-pad+15:.2f}" font-size="9" fill="{text_color}" text-anchor="middle" transform="rotate(-45 {x:.2f} {h-pad+15:.2f})">{label}</text>')
 
