@@ -33,8 +33,6 @@ jobs:
 
       - name: Generate LOC graph
         uses: botforge-pro/loc-graph-action@main
-        with:
-          theme: dark  # 'dark' or 'light', default is 'light'
 ```
 
 ### Trigger Options
@@ -57,11 +55,17 @@ on:
 
 2.	Commit and push the workflow file.
 3.	After the workflow runs, the generated files will appear:
-   * .github/loc-history.svg — SVG chart of LOC over time
+   * .github/loc-history-light.svg — SVG chart for light theme
+   * .github/loc-history-dark.svg — SVG chart for dark theme
+   * .github/loc-history.svg — Fallback SVG for backward compatibility
    * .github/loc_history.json — cached LOC data	
- 4.	Embed the SVG in your README.md:
-```
-<img src=".github/loc-history.svg" alt="Lines of code over time">
+ 4.	Embed the SVG in your README.md with automatic theme switching:
+```html
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/loc-history-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset=".github/loc-history-light.svg">
+  <img src=".github/loc-history-light.svg" alt="Lines of code over time">
+</picture>
 ```
 
 ## Configuration Options
@@ -70,9 +74,8 @@ All inputs are optional:
 
 | Input | Description | Default |
 |-------|-------------|---------|
-| `output_svg` | Path to output SVG file | `.github/loc-history.svg` |
 | `output_json` | Path to cached LOC history JSON | `.github/loc_history.json` |
-| `theme` | Graph theme: `light` or `dark` | `light` |
+| `fallback_theme` | Theme for fallback SVG: `light` or `dark` | `light` |
 | `date_format` | Date format for multi-day projects (Python strftime) | `%d.%m.%Y` |
 | `time_format` | Time format for same-day commits (Python strftime) | `%H:%M` |
 
@@ -82,9 +85,8 @@ All inputs are optional:
 - name: Generate LOC graph
   uses: botforge-pro/loc-graph-action@main
   with:
-    output_svg: "docs/images/loc-chart.svg"
     output_json: "docs/data/loc-cache.json"
-    theme: dark
+    fallback_theme: dark  # Theme for .github/loc-history.svg
     date_format: "%Y-%m-%d"  # 2024-03-15
     time_format: "%I:%M %p"  # 03:45 PM
 ```
@@ -93,4 +95,8 @@ All inputs are optional:
 
 This repository uses its own action to track LOC over time:
 
-<img src=".github/loc-history.svg" alt="Lines of code over time">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/loc-history-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset=".github/loc-history-light.svg">
+  <img src=".github/loc-history-light.svg" alt="Lines of code over time">
+</picture>

@@ -5,11 +5,14 @@
 
 import json
 import os
+import shutil
 import subprocess
 from datetime import datetime
 
 # Fixed paths to match action.yml defaults
-OUTPUT_SVG = ".github/loc-history.svg"
+OUTPUT_SVG_FALLBACK = ".github/loc-history.svg"
+OUTPUT_SVG_LIGHT = ".github/loc-history-light.svg"
+OUTPUT_SVG_DARK = ".github/loc-history-dark.svg"
 OUTPUT_JSON = ".github/loc_history.json"
 
 # Directories commonly excluded from LOC counts
@@ -74,16 +77,15 @@ def format_number(n):
     else:
         return str(n)
 
-def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
-    """Write simple static SVG line chart to OUTPUT_SVG."""
-    os.makedirs(os.path.dirname(OUTPUT_SVG), exist_ok=True)
+def generate_svg(points, output_path, theme="light", w=900, h=260, pad=40, title="Lines of code over time"):
+    """Write simple static SVG line chart to output_path."""
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
     if not points:
         svg = f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}"><text x="12" y="24">No data</text></svg>'
-        open(OUTPUT_SVG, "w", encoding="utf-8").write(svg)
+        open(output_path, "w", encoding="utf-8").write(svg)
         return
 
     # Theme colors
-    theme = os.environ.get("THEME", "light").lower()
     if theme == "dark":
         bg_color = "#0d1117"  # GitHub dark background
         grid_color = "#30363d"
@@ -167,7 +169,7 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
     {''.join(date_labels)}
   </g>
 </svg>'''
-    open(OUTPUT_SVG, "w", encoding="utf-8").write(svg)
+    open(output_path, "w", encoding="utf-8").write(svg)
 
 def main():
     current_ref = sh(["git", "rev-parse", "--abbrev-ref", "HEAD"])
@@ -189,9 +191,15 @@ def main():
         run(["git", "checkout", "--quiet", current_ref])
 
     hist.sort(key=lambda e: datetime.fromisoformat(e["date"]))
-    if updated or not os.path.exists(OUTPUT_SVG):
+    if updated or not os.path.exists(OUTPUT_SVG_LIGHT) or not os.path.exists(OUTPUT_SVG_DARK):
         save_history(hist)
-        generate_svg(hist)
+        generate_svg(hist, OUTPUT_SVG_LIGHT, theme="light")
+        generate_svg(hist, OUTPUT_SVG_DARK, theme="dark")
+        
+        # Copy appropriate theme to fallback for backward compatibility
+        fallback_theme = os.environ.get("FALLBACK_THEME", "light").lower()
+        source_svg = OUTPUT_SVG_DARK if fallback_theme == "dark" else OUTPUT_SVG_LIGHT
+        shutil.copy(source_svg, OUTPUT_SVG_FALLBACK)
 
 if __name__ == "__main__":
     main()

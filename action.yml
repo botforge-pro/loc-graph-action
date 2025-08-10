@@ -2,16 +2,12 @@ name: "LOC Graph Action"
 description: "Generate an SVG chart of Lines of Code over time from commit history"
 author: "Your Name"
 inputs:
-  output_svg:
-    description: "Path to output SVG"
-    default: ".github/loc-history.svg"
-    required: false
   output_json:
     description: "Path to cached LOC history JSON"
     default: ".github/loc_history.json"
     required: false
-  theme:
-    description: "Graph theme: 'light' or 'dark'"
+  fallback_theme:
+    description: "Theme for fallback SVG (light or dark)"
     default: "light"
     required: false
   date_format:
@@ -40,7 +36,7 @@ runs:
     - name: Run LOC graph generator
       shell: bash
       run: |
-        THEME="${{ inputs.theme }}" \
+        FALLBACK_THEME="${{ inputs.fallback_theme }}" \
         DATE_FORMAT="${{ inputs.date_format }}" \
         TIME_FORMAT="${{ inputs.time_format }}" \
         python3 "${GITHUB_ACTION_PATH}/scripts/loc_graph.py"
@@ -50,7 +46,7 @@ runs:
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git add "${{ inputs.output_svg }}" "${{ inputs.output_json }}" || true
+        git add ".github/loc-history.svg" ".github/loc-history-light.svg" ".github/loc-history-dark.svg" "${{ inputs.output_json }}" || true
         if ! git diff --cached --quiet; then
           git commit -m "Update LOC graph [skip ci]"
           git push
