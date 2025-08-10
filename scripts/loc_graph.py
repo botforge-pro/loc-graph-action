@@ -83,6 +83,8 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
         normalized = n / magnitude
         if normalized <= 1:
             return magnitude
+        elif normalized <= 2:
+            return 2 * magnitude
         elif normalized <= 2.5:
             return int(2.5 * magnitude)
         elif normalized <= 5:
