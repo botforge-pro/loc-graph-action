@@ -6,7 +6,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'scripts'))
 
-from loc_graph import nice_round, format_number
+from loc_graph import nice_round, format_number, calculate_ymax
 
 
 @pytest.mark.parametrize("input_val,expected", [
@@ -108,3 +108,39 @@ def test_format_number_rounding():
     assert format_number(1234) == "1.2k"  # Should show 1 decimal
     assert format_number(1999) == "2.0k"  # Should show 1 decimal
     assert format_number(1001) == "1.0k"   # Always shows decimal for k/M
+
+
+@pytest.mark.parametrize("max_val,expected_ymax", [
+    (8100, 10000),  # 81% usage
+    (100, 200),
+    (1500, 2000),
+    (7999, 10000),
+    (8000, 10000),
+    (8001, 10000),  # 80% usage
+    (9001, 10000),  # 90% usage
+    (9499, 10000),  # 94.99% usage
+    (9500, 20000),  # 95% usage triggers next level
+    (9501, 20000),  # >95% usage
+    (0, 100),
+    (-10, 100),
+])
+def test_calculate_ymax(max_val, expected_ymax):
+    """Test calculate_ymax function"""
+    assert calculate_ymax(max_val) == expected_ymax
+
+
+@pytest.mark.parametrize("ymax,num_lines,expected_grid", [
+    (20000, 5, [0, 5000, 10000, 15000, 20000]),
+    (20000, 6, [0, 4000, 8000, 12000, 16000, 20000]),
+    (10000, 5, [0, 2500, 5000, 7500, 10000]),
+    (10000, 6, [0, 2000, 4000, 6000, 8000, 10000]),
+    (200, 5, [0, 50, 100, 150, 200]),
+    (2000, 5, [0, 500, 1000, 1500, 2000]),
+])
+def test_grid_line_values(ymax, num_lines, expected_grid):
+    """Test grid line value calculation"""
+    grid_values = []
+    for i in range(num_lines):
+        val = int(ymax * i / (num_lines - 1))
+        grid_values.append(val)
+    assert grid_values == expected_grid

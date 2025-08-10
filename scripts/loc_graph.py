@@ -88,6 +88,28 @@ def format_number(n):
     else:
         return str(n)
 
+def calculate_ymax(max_val):
+    """Calculate ymax for graph with appropriate padding."""
+    if max_val <= 0:
+        return 100
+    
+    ymax = nice_round(max_val)
+    
+    # Only add padding if value is too close to the limit
+    if max_val >= ymax * 0.95:
+        # Need next level up
+        if ymax < 100:
+            ymax = ymax + 10
+        elif ymax < 1000:
+            ymax = ymax + 100
+        elif ymax < 10000:
+            ymax = ymax + 1000
+        else:
+            ymax = ymax + 10000
+        ymax = nice_round(ymax)
+    
+    return ymax
+
 def generate_svg(points, output_path, theme="light", w=900, h=260, pad=40, title="Lines of code over time"):
     """Write simple static SVG line chart to output_path."""
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
@@ -115,18 +137,8 @@ def generate_svg(points, output_path, theme="light", w=900, h=260, pad=40, title
     xs = list(range(len(points)))
     ys = [p["loc"] for p in points]
     ymin = 0
-    # Round up the max value to next nice number, ensuring some padding
-    max_val = max(ys) if max(ys) > 0 else 100
-    
-    # First, get the nice round number at or above max_val
-    ymax = nice_round(max_val)
-    
-    # If max_val equals ymax (exact match), we need the next level
-    # Otherwise check if we're using more than 80%
-    if max_val == ymax or max_val > ymax * 0.8:
-        # Find the next nice number in the sequence
-        # Add a small increment to ensure we get the next level
-        ymax = nice_round(ymax * 1.1 + 1)
+    max_val = max(ys) if ys else 0
+    ymax = calculate_ymax(max_val)
 
     def sx(i): return pad + i * (w - 2*pad) / max(1, len(xs)-1)
     def sy(v): return h - pad - (v - ymin) * (h - 2*pad) / (ymax - ymin)
@@ -162,8 +174,9 @@ def generate_svg(points, output_path, theme="light", w=900, h=260, pad=40, title
 
     # Y grid - Generate grid with nice tick values
     grid = []
-    for i in range(6):
-        val = int(ymax * i / 5)
+    num_grid_lines = 5  # Number of horizontal grid lines (including 0 and max)
+    for i in range(num_grid_lines):
+        val = int(ymax * i / (num_grid_lines - 1))
         y = sy(val)
         grid.append(f'<line x1="{pad}" y1="{y:.2f}" x2="{w-pad}" y2="{y:.2f}" stroke="{grid_color}"/>')
         grid.append(f'<text x="{pad-8}" y="{y+4:.2f}" font-size="10" fill="{text_color}" text-anchor="end">{format_number(val)}</text>')
