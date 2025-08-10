@@ -1,6 +1,9 @@
 name: "LOC Graph Action"
 description: "Generate an SVG chart of Lines of Code over time from commit history"
-author: "Your Name"
+author: "Maxim Oransky"
+branding:
+  icon: 'trending-up'
+  color: 'green'
 inputs:
   output_json:
     description: "Path to cached LOC history JSON"
@@ -51,4 +54,3 @@ runs:
           git commit -m "Update LOC graph [skip ci]"
           git push
         fi
-        
