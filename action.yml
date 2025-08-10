@@ -21,6 +21,10 @@ inputs:
     description: "Time format for same-day commits (Python strftime)"
     default: "%H:%M"
     required: false
+  exclude:
+    description: "Additional directories to exclude from counting (comma-separated)"
+    default: ""
+    required: false
 runs:
   using: "composite"
   steps:
@@ -42,6 +46,7 @@ runs:
         FALLBACK_THEME="${{ inputs.fallback_theme }}" \
         DATE_FORMAT="${{ inputs.date_format }}" \
         TIME_FORMAT="${{ inputs.time_format }}" \
+        EXCLUDE="${{ inputs.exclude }}" \
         python3 "${GITHUB_ACTION_PATH}/scripts/loc_graph.py"
 
     - name: Commit artifacts if changed

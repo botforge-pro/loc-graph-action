@@ -16,7 +16,17 @@ OUTPUT_SVG_DARK = ".github/loc-history-dark.svg"
 OUTPUT_JSON = ".github/loc_history.json"
 
 # Directories commonly excluded from LOC counts
-EXCLUDE_DIRS = [".git", ".github"]
+DEFAULT_EXCLUDE = [".git", ".github", "package-lock.json"]
+
+def get_exclude_dirs():
+    """Get exclude directories from environment or use defaults."""
+    exclude_env = os.environ.get("EXCLUDE", "")
+    if not exclude_env:
+        return DEFAULT_EXCLUDE
+
+    # Split by comma and strip whitespace
+    custom_excludes = [dir.strip() for dir in exclude_env.split(",") if dir.strip()]
+    return DEFAULT_EXCLUDE + custom_excludes
 
 def sh(cmd):
     return subprocess.check_output(cmd, text=True).strip()
@@ -27,7 +37,8 @@ def run(cmd):
 def cloc_code_lines():
     """Return SUM.code from cloc JSON output."""
     # Build --exclude-dir list
-    exclude = "--exclude-dir=" + ",".join(EXCLUDE_DIRS)
+    exclude_dirs = get_exclude_dirs()
+    exclude = "--exclude-dir=" + ",".join(exclude_dirs)
     out = sh(["cloc", "--json", "--quiet", exclude, "."])
     data = json.loads(out)
     return int(data.get("SUM", {}).get("code", 0))

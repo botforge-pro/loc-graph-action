@@ -78,6 +78,7 @@ jobs:
           fallback_theme: dark  # Theme for .github/loc-history.svg
           date_format: "%Y-%m-%d"  # 2024-03-15
           time_format: "%I:%M %p"  # 03:45 PM
+          exclude: ".cache,assets"  # Additional names to exclude
 ```
 
 ## Live example
