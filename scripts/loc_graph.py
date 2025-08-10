@@ -16,7 +16,7 @@ OUTPUT_SVG_DARK = ".github/loc-history-dark.svg"
 OUTPUT_JSON = ".github/loc_history.json"
 
 # Directories commonly excluded from LOC counts
-DEFAULT_EXCLUDE = [".git", ".github"]
+DEFAULT_EXCLUDE = [".git", ".github", "package-lock.json"]
 
 def get_exclude_dirs():
     """Get exclude directories from environment or use defaults."""
