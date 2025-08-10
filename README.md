@@ -1,5 +1,7 @@
 # LOC Graph Action
 
+[![Tests](https://github.com/botforge-pro/loc-graph-action/actions/workflows/test.yml/badge.svg)](https://github.com/botforge-pro/loc-graph-action/actions/workflows/test.yml)
+
 GitHub Action that analyzes your repository's commit history, counts lines of code (LOC) for each commit using `cloc`, and generates an SVG chart showing LOC changes over time.  
 The SVG and a JSON cache are committed back to the repository automatically, so you can embed the chart directly in your README.
 
