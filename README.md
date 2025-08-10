@@ -1,7 +1,7 @@
 # LOC Graph Action
 
 [![Tests](https://github.com/botforge-pro/loc-graph-action/actions/workflows/test.yml/badge.svg)](https://github.com/botforge-pro/loc-graph-action/actions/workflows/test.yml)
-[![Use this action](https://img.shields.io/badge/Use%20this%20action-blue?style=for-the-badge&logo=github-actions)](https://github.com/marketplace/actions/loc-graph-action)
+[![Use this action](https://img.shields.io/badge/Use%20this%20action-blue?logo=github-actions)](https://github.com/marketplace/actions/loc-graph-action)
 
 GitHub Action that scans your repository's commit history, calculates lines of code (LOC) for each commit, and produces an SVG chart showing how LOC changes over time. The generated SVG and a JSON cache are automatically committed back to the repository, allowing you to embed the chart directly in your README.
 
