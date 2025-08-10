@@ -90,7 +90,7 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
         else:
             return 10 * magnitude
     
-    ymax = nice_round(max(ys) * 1.2) if max(ys) > 0 else 100
+    ymax = nice_round(max(ys) * 1.1) if max(ys) > 0 else 100
 
     def sx(i): return pad + i * (w - 2*pad) / max(1, len(xs)-1)
     def sy(v): return h - pad - (v - ymin) * (h - 2*pad) / (ymax - ymin)
@@ -141,8 +141,8 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h+30}" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
   <rect width="100%" height="100%" fill="{bg_color}"/>
   <g>
-    {''.join(x_grid)}
     {''.join(grid)}
+    {''.join(x_grid)}
     <line x1="{pad}" y1="{h-pad}" x2="{w-pad}" y2="{h-pad}" stroke="{axis_color}"/>
     <line x1="{pad}" y1="{pad}"   x2="{pad}"   y2="{h-pad}" stroke="{axis_color}"/>
     <path d="{path}" fill="none" stroke="{line_color}" stroke-width="2"/>
