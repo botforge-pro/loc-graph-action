@@ -9,38 +9,43 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'scripts'))
 from loc_graph import nice_round, format_number
 
 
-@pytest.mark.parametrize("input_val,max_expected", [
-    (5, 10),
+@pytest.mark.parametrize("input_val,expected", [
+    (5, 5),
     (10, 10),
+    (11, 20),
     (15, 20),
-    (25, 50),
+    (25, 30),
     (50, 50),
+    (51, 100),
     (75, 100),
     (100, 100),
+    (101, 200),
     (150, 200),
-    (200, 250),
-    (246, 300),  # 246 * 1.1 = 270.6
+    (200, 200),
+    (201, 300),
+    (246, 300),
     (270, 300),
     (400, 500),
-    (500, 600),
+    (500, 500),
+    (501, 1000),
     (750, 1000),
-    (1000, 1200),
+    (1000, 1000),
+    (1001, 2000),
     (1500, 2000),
-    (2200, 2500),
+    (2200, 3000),
     (4500, 5000),
     (7500, 10000),
 ])
-def test_nice_round_with_multiplier(input_val, max_expected):
-    """Test nice_round with 1.1 multiplier as used in real code"""
-    result = nice_round(input_val * 1.1)
-    assert result <= max_expected, f"nice_round({input_val} * 1.1) = {result}, expected <= {max_expected}"
-    assert result >= input_val, f"nice_round({input_val} * 1.1) = {result}, should be >= {input_val}"
+def test_nice_round(input_val, expected):
+    """Test nice_round function"""
+    result = nice_round(input_val)
+    assert result == expected, f"nice_round({input_val}) = {result}, expected {expected}"
 
 
 def test_nice_round_edge_cases():
     """Test edge cases"""
     assert nice_round(0) == 10  # Zero case
-    assert nice_round(1) == 10  # Minimum
+    assert nice_round(1) == 1   # Small number
     assert nice_round(10) == 10  # Exact boundary
 
 
@@ -64,6 +69,6 @@ def test_format_number(input_val, expected):
 
 def test_format_number_rounding():
     """Test that rounding works correctly"""
-    assert format_number(1234) == "1.2k"  # Should round down
-    assert format_number(1999) == "2k"    # Should round up
-    assert format_number(1001) == "1k"    # Should round down
+    assert format_number(1234) == "1.2k"  # Should show 1 decimal
+    assert format_number(1999) == "2.0k"  # Should show 1 decimal
+    assert format_number(1001) == "1.0k"   # Always shows decimal for k/M

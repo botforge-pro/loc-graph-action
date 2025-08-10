@@ -102,11 +102,14 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
     xs = list(range(len(points)))
     ys = [p["loc"] for p in points]
     ymin = 0
-    # Round up the max value to next nice number
-    ymax = nice_round(max(ys)) if max(ys) > 0 else 100
-    # Add small padding if we're exactly at the max
-    if ymax == max(ys):
-        ymax = nice_round(max(ys) + 1)
+    # Round up the max value to next nice number, ensuring some padding
+    max_val = max(ys) if max(ys) > 0 else 100
+    ymax = nice_round(max_val)
+    
+    # If we're too close to the top (>90% of ymax), add one more grid step
+    if max_val > ymax * 0.9:
+        # Find the next nice number after ymax
+        ymax = nice_round(ymax + 1)
 
     def sx(i): return pad + i * (w - 2*pad) / max(1, len(xs)-1)
     def sy(v): return h - pad - (v - ymin) * (h - 2*pad) / (ymax - ymin)
