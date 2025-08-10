@@ -122,12 +122,21 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
             date_labels.append(f'<text x="{x:.2f}" y="{h-pad+15:.2f}" font-size="9" fill="{text_color}" text-anchor="middle" transform="rotate(-45 {x:.2f} {h-pad+15:.2f})">{label}</text>')
 
     # Y grid - Generate grid with nice tick values
+    def format_number(n):
+        """Format numbers: 1000 -> 1k, 1000000 -> 1M"""
+        if n >= 1000000:
+            return f"{n/1000000:.0f}M" if n % 1000000 == 0 else f"{n/1000000:.1f}M"
+        elif n >= 1000:
+            return f"{n/1000:.0f}k" if n % 1000 == 0 else f"{n/1000:.1f}k"
+        else:
+            return str(n)
+    
     grid = []
     for i in range(6):
         val = int(ymax * i / 5)
         y = sy(val)
         grid.append(f'<line x1="{pad}" y1="{y:.2f}" x2="{w-pad}" y2="{y:.2f}" stroke="{grid_color}"/>')
-        grid.append(f'<text x="{pad-8}" y="{y+4:.2f}" font-size="10" fill="{text_color}" text-anchor="end">{val}</text>')
+        grid.append(f'<text x="{pad-8}" y="{y+4:.2f}" font-size="10" fill="{text_color}" text-anchor="end">{format_number(val)}</text>')
 
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h+30}" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;">
   <rect width="100%" height="100%" fill="{bg_color}"/>
