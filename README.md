@@ -16,6 +16,8 @@ on:
   push:
     branches: [ main, master ]
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # Daily at midnight UTC
 
 permissions:
   contents: write
@@ -33,6 +35,24 @@ jobs:
         uses: botforge-pro/loc-graph-action@main
         with:
           theme: dark  # 'dark' or 'light', default is 'light'
+```
+
+### Trigger Options
+
+You can trigger the graph generation in different ways:
+
+- **On every push** (shown above) - Updates immediately after commits
+- **Daily via cron** - Add `schedule` to run once per day to save Actions minutes
+- **Manual only** - Keep only `workflow_dispatch` for on-demand generation
+
+**Note:** Each graph update creates a new commit. For actively developed projects, using cron is recommended to avoid cluttering history with automated commits.
+
+For less active repos, daily updates are recommended:
+```yaml
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Daily at midnight
+  workflow_dispatch:      # Allow manual triggers
 ```
 
 2.	Commit and push the workflow file.
