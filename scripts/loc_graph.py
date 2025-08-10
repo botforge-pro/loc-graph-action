@@ -105,20 +105,20 @@ def generate_svg(points, w=900, h=260, pad=40, title="Lines of code over time"):
     dates_only = [p["date"][:10] for p in points]
     use_time = len(dates_only) != len(set(dates_only))  # Show time if dates repeat
     
-    # Add vertical lines and date labels for each point
+    # Add vertical lines and date labels for selected points
     for i, point in enumerate(points):
-        x = sx(i)
-        # Vertical grid line
-        x_grid.append(f'<line x1="{x:.2f}" y1="{pad}" x2="{x:.2f}" y2="{h-pad}" stroke="{grid_color}" opacity="0.5"/>')
-        
-        # Date label (rotate for better fit)
-        if use_time:
-            label = point["date"][11:16]  # Show HH:MM if dates repeat
-        else:
-            label = point["date"][5:10]  # Show MM-DD
-        
-        # Only show every Nth label if too crowded (more than 10 points)
+        # Only show every Nth line and label if too crowded (more than 10 points)
         if len(points) <= 10 or i % max(1, len(points) // 10) == 0:
+            x = sx(i)
+            # Vertical grid line
+            x_grid.append(f'<line x1="{x:.2f}" y1="{pad}" x2="{x:.2f}" y2="{h-pad}" stroke="{grid_color}" opacity="0.5"/>')
+            
+            # Date label (rotate for better fit)
+            if use_time:
+                label = point["date"][11:16]  # Show HH:MM if dates repeat
+            else:
+                label = point["date"][5:10]  # Show MM-DD
+            
             date_labels.append(f'<text x="{x:.2f}" y="{h-pad+15:.2f}" font-size="9" fill="{text_color}" text-anchor="middle" transform="rotate(-45 {x:.2f} {h-pad+15:.2f})">{label}</text>')
 
     # Y grid - Generate grid with nice tick values
