@@ -30,7 +30,7 @@ jobs:
           fetch-depth: 0
 
       - name: Generate LOC graph
-        uses: botforge-pro/loc-graph-action@v0.1.0
+        uses: botforge-pro/loc-graph-action@main
         with:
           theme: dark  # 'dark' or 'light'
 ```
