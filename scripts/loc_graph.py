@@ -58,24 +58,25 @@ def save_history(hist):
     os.makedirs(os.path.dirname(OUTPUT_JSON), exist_ok=True)
     with open(OUTPUT_JSON, "w", encoding="utf-8") as f:
         json.dump(hist, f, ensure_ascii=False, indent=2)
+        f.write("\n")
 
 def nice_round(n):
     """Round up to nice numbers like 10, 20, 50, 100, 200, 300, 500, 1000, etc."""
     if n <= 0:
         return 10
-    
+
     # Nice round numbers sequence
     steps = [1, 2, 3, 5, 10]
-    
+
     # Find magnitude (10, 100, 1000, etc)
     magnitude = 10 ** (len(str(int(n))) - 1)
-    
+
     # Find the nice number
     for step in steps:
         nice = step * magnitude
         if n <= nice:
             return nice
-    
+
     # If nothing fits, go to next magnitude
     return 10 * magnitude
 
@@ -92,9 +93,9 @@ def calculate_ymax(max_val):
     """Calculate ymax for graph with appropriate padding."""
     if max_val <= 0:
         return 100
-    
+
     ymax = nice_round(max_val)
-    
+
     # Only add padding if value is too close to the limit
     if max_val >= ymax * 0.95:
         # Need next level up
@@ -107,7 +108,7 @@ def calculate_ymax(max_val):
         else:
             ymax = ymax + 10000
         ymax = nice_round(ymax)
-    
+
     return ymax
 
 def generate_svg(points, output_path, theme="light", w=900, h=260, pad=40, title="Lines of code over time"):
@@ -148,16 +149,16 @@ def generate_svg(points, output_path, theme="light", w=900, h=260, pad=40, title
     # X grid with dates
     x_grid = []
     date_labels = []
-    
+
     # Get date/time formats from environment
     date_format = os.environ.get("DATE_FORMAT", "%d.%m.%Y")
     time_format = os.environ.get("TIME_FORMAT", "%H:%M")
-    
+
     # Determine if project spans multiple days
     first_date = datetime.fromisoformat(points[0]["date"]).date()
     last_date = datetime.fromisoformat(points[-1]["date"]).date()
     use_time = (last_date - first_date).days <= 2  # Use time for projects ≤2 days
-    
+
     # Add vertical lines and date labels for selected points
     for i, point in enumerate(points):
         # Only show every Nth line and label if too crowded (more than 10 points)
@@ -165,11 +166,11 @@ def generate_svg(points, output_path, theme="light", w=900, h=260, pad=40, title
             x = sx(i)
             # Vertical grid line
             x_grid.append(f'<line x1="{x:.2f}" y1="{pad}" x2="{x:.2f}" y2="{h-pad}" stroke="{grid_color}" opacity="0.5"/>')
-            
+
             # Format date label
             dt = datetime.fromisoformat(point["date"])
             label = dt.strftime(time_format if use_time else date_format)
-            
+
             date_labels.append(f'<text x="{x:.2f}" y="{h-pad+15:.2f}" font-size="9" fill="{text_color}" text-anchor="middle" transform="rotate(-45 {x:.2f} {h-pad+15:.2f})">{label}</text>')
 
     # Y grid - Generate grid with nice tick values
@@ -219,7 +220,7 @@ def main():
         save_history(hist)
         generate_svg(hist, OUTPUT_SVG_LIGHT, theme="light")
         generate_svg(hist, OUTPUT_SVG_DARK, theme="dark")
-        
+
         # Copy appropriate theme to fallback for backward compatibility
         fallback_theme = os.environ.get("FALLBACK_THEME", "light").lower()
         source_svg = OUTPUT_SVG_DARK if fallback_theme == "dark" else OUTPUT_SVG_LIGHT
