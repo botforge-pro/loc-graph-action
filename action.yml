@@ -41,15 +41,17 @@ runs:
         sudo apt-get install -y cloc --no-install-recommends
 
     - name: Run LOC graph generator
+      id: loc_graph
       shell: bash
       run: |
         FALLBACK_THEME="${{ inputs.fallback_theme }}" \
         DATE_FORMAT="${{ inputs.date_format }}" \
         TIME_FORMAT="${{ inputs.time_format }}" \
         EXCLUDE="${{ inputs.exclude }}" \
-        python3 "${GITHUB_ACTION_PATH}/scripts/loc_graph.py"
+        python3 "${GITHUB_ACTION_PATH}/scripts/loc_graph.py" && echo "changed=true" >> $GITHUB_OUTPUT || echo "changed=false" >> $GITHUB_OUTPUT
 
     - name: Commit artifacts if changed
+      if: steps.loc_graph.outputs.changed == 'true'
       shell: bash
       run: |
         git config user.name "github-actions[bot]"

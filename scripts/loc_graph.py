@@ -201,7 +201,10 @@ def main():
     commits = get_commits()
     hist = load_history()
     done = {e["sha"] for e in hist}
-    updated = False
+    loc_changed = False
+    
+    # Store original LOC count before updates
+    original_loc_values = [e["loc"] for e in hist] if hist else []
 
     try:
         for sha, date in commits:
@@ -211,12 +214,17 @@ def main():
             run(["git", "checkout", "--quiet", sha])
             loc = cloc_code_lines()
             hist.append({"sha": sha, "date": date, "loc": loc})
-            updated = True
     finally:
         run(["git", "checkout", "--quiet", current_ref])
 
     hist.sort(key=lambda e: datetime.fromisoformat(e["date"]))
-    if updated or not os.path.exists(OUTPUT_SVG_LIGHT) or not os.path.exists(OUTPUT_SVG_DARK):
+    
+    # Check if LOC values have changed
+    new_loc_values = [e["loc"] for e in hist]
+    loc_changed = original_loc_values != new_loc_values
+    
+    # Only update if LOC changed or SVG files don't exist
+    if loc_changed or not os.path.exists(OUTPUT_SVG_LIGHT) or not os.path.exists(OUTPUT_SVG_DARK):
         save_history(hist)
         generate_svg(hist, OUTPUT_SVG_LIGHT, theme="light")
         generate_svg(hist, OUTPUT_SVG_DARK, theme="dark")
@@ -225,6 +233,13 @@ def main():
         fallback_theme = os.environ.get("FALLBACK_THEME", "light").lower()
         source_svg = OUTPUT_SVG_DARK if fallback_theme == "dark" else OUTPUT_SVG_LIGHT
         shutil.copy(source_svg, OUTPUT_SVG_FALLBACK)
+        
+        # Exit with code 0 to indicate changes were made
+        exit(0)
+    else:
+        # Exit with code 1 to indicate no changes
+        print("No changes in LOC, skipping update")
+        exit(1)
 
 if __name__ == "__main__":
     main()
