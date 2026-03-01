@@ -9,9 +9,13 @@ inputs:
     description: "Path to cached LOC history JSON"
     default: ".github/loc_history.json"
     required: false
-  fallback_theme:
+  theme:
     description: "Theme for fallback SVG (light or dark)"
     default: "light"
+    required: false
+  fallback_theme:
+    description: "Deprecated: use 'theme' instead"
+    default: ""
     required: false
   date_format:
     description: "Date format for multi-day projects (Python strftime)"
@@ -64,7 +68,7 @@ runs:
       id: loc_graph
       shell: bash
       run: |
-        FALLBACK_THEME="${{ inputs.fallback_theme }}" \
+        FALLBACK_THEME="${{ inputs.theme || inputs.fallback_theme || 'light' }}" \
         DATE_FORMAT="${{ inputs.date_format }}" \
         TIME_FORMAT="${{ inputs.time_format }}" \
         EXCLUDE="${{ inputs.exclude }}" \
