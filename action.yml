@@ -28,7 +28,25 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Check for real commits since last LOC update
+      id: skip_check
+      shell: bash
+      run: |
+        LAST_LOC=$(git log --all --oneline --grep="Update LOC graph" -1 --format="%H" 2>/dev/null || true)
+        if [ -n "$LAST_LOC" ]; then
+          REAL=$(git log "$LAST_LOC"..HEAD --oneline --invert-grep --grep="Update LOC graph" | wc -l | tr -d ' ')
+        else
+          REAL=1
+        fi
+        echo "real_commits=$REAL" >> "$GITHUB_OUTPUT"
+        if [ "$REAL" = "0" ]; then
+          echo "No real commits since last LOC update, skipping"
+        else
+          echo "Found $REAL real commit(s), proceeding"
+        fi
+
     - name: Ensure full git history
+      if: steps.skip_check.outputs.real_commits != '0'
       shell: bash
       run: |
         if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
@@ -36,11 +54,13 @@ runs:
         fi
 
     - name: Install cloc
+      if: steps.skip_check.outputs.real_commits != '0'
       shell: bash
       run: |
         sudo apt-get install -y cloc --no-install-recommends
 
     - name: Run LOC graph generator
+      if: steps.skip_check.outputs.real_commits != '0'
       id: loc_graph
       shell: bash
       run: |
@@ -51,7 +71,7 @@ runs:
         python3 "${GITHUB_ACTION_PATH}/scripts/loc_graph.py" && echo "changed=true" >> $GITHUB_OUTPUT || echo "changed=false" >> $GITHUB_OUTPUT
 
     - name: Commit artifacts if changed
-      if: steps.loc_graph.outputs.changed == 'true'
+      if: steps.skip_check.outputs.real_commits != '0' && steps.loc_graph.outputs.changed == 'true'
       shell: bash
       run: |
         git config user.name "github-actions[bot]"
