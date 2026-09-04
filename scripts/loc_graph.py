@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Generates an SVG chart of LOC over time using cloc per commit.
 # Caches results in .github/loc_history.json to avoid recomputation.
 
@@ -7,6 +5,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 from datetime import datetime
 
 # Fixed paths to match action.yml defaults
@@ -125,7 +124,8 @@ def generate_svg(points, output_path, theme="light", w=900, h=260, pad=40, title
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     if not points:
         svg = f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}"><text x="12" y="24">No data</text></svg>'
-        open(output_path, "w", encoding="utf-8").write(svg)
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(svg)
         return
 
     # Theme colors
@@ -203,7 +203,8 @@ def generate_svg(points, output_path, theme="light", w=900, h=260, pad=40, title
     {''.join(date_labels)}
   </g>
 </svg>'''
-    open(output_path, "w", encoding="utf-8").write(svg)
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(svg)
 
 def main():
     current_ref = sh(["git", "rev-parse", "--abbrev-ref", "HEAD"])
@@ -243,12 +244,10 @@ def main():
         source_svg = OUTPUT_SVG_DARK if fallback_theme == "dark" else OUTPUT_SVG_LIGHT
         shutil.copy(source_svg, OUTPUT_SVG_FALLBACK)
         
-        # Exit with code 0 to indicate changes were made
-        exit(0)
+        sys.exit(0)
     else:
-        # Exit with code 1 to indicate no changes
         print("No changes in LOC, skipping update")
-        exit(1)
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
