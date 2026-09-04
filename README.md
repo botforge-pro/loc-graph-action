@@ -78,7 +78,29 @@ jobs:
           date_format: "%Y-%m-%d"  # 2024-03-15
           time_format: "%I:%M %p"  # 03:45 PM
           exclude: ".cache,assets"  # Additional names to exclude
+          include_lang: "Python,Swift"  # Count only these languages
 ```
+
+## Counting the code, not the data
+
+`exclude` names directories to skip, which is enough while the repository is
+mostly code. It stops being enough in two cases, and both end with a chart of
+something other than the codebase:
+
+- data files sit beside the code — fixtures, recorded responses, exported
+  measurements — and cloc counts JSON and YAML as languages of their own;
+- a directory name contains a comma, which the comma-separated list cannot
+  express at all.
+
+`include_lang` names what to count instead of what to skip, so neither case
+needs a list that has to be kept up to date as directories come and go:
+
+```yaml
+        with:
+          include_lang: "Python"
+```
+
+Leave it empty and every language cloc knows is counted, as before.
 
 ## Live example
 

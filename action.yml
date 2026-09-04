@@ -29,6 +29,14 @@ inputs:
     description: "Additional directories to exclude from counting (comma-separated)"
     default: ""
     required: false
+  include_lang:
+    description: >-
+      Count only these cloc languages (comma-separated, e.g. "Python,Swift").
+      Use it where data files live beside the code: a directory list cannot
+      express "count the code", and cannot name a directory whose own name
+      holds a comma. Empty counts every language, as before.
+    default: ""
+    required: false
 runs:
   using: "composite"
   steps:
@@ -72,6 +80,7 @@ runs:
         DATE_FORMAT="${{ inputs.date_format }}" \
         TIME_FORMAT="${{ inputs.time_format }}" \
         EXCLUDE="${{ inputs.exclude }}" \
+        INCLUDE_LANG="${{ inputs.include_lang }}" \
         python3 "${GITHUB_ACTION_PATH}/scripts/loc_graph.py" && echo "changed=true" >> $GITHUB_OUTPUT || echo "changed=false" >> $GITHUB_OUTPUT
 
     - name: Commit artifacts if changed

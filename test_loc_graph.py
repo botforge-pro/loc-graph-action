@@ -6,7 +6,30 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'scripts'))
 
-from loc_graph import nice_round, format_number, calculate_ymax
+from loc_graph import nice_round, format_number, calculate_ymax, cloc_command
+
+
+def test_every_language_is_counted_by_default(monkeypatch):
+    monkeypatch.delenv("INCLUDE_LANG", raising=False)
+
+    assert not [arg for arg in cloc_command() if arg.startswith("--include-lang")]
+
+
+def test_only_the_named_languages_are_counted(monkeypatch):
+    monkeypatch.setenv("INCLUDE_LANG", "Python, Swift")
+
+    assert "--include-lang=Python,Swift" in cloc_command()
+
+
+def test_a_directory_whose_name_holds_a_comma_needs_the_language_list(monkeypatch):
+    monkeypatch.setenv("EXCLUDE", "2000 words (Serbian, English),assets")
+
+    excluded = [arg for arg in cloc_command() if arg.startswith("--exclude-dir")][0]
+
+    assert excluded.endswith("2000 words (Serbian,English),assets"), (
+        "cloc takes the names comma-separated, so a name holding a comma arrives "
+        "as two names that match nothing — which is why include_lang exists"
+    )
 
 
 @pytest.mark.parametrize("input_val,expected", [

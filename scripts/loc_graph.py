@@ -34,13 +34,22 @@ def sh(cmd):
 def run(cmd):
     subprocess.check_call(cmd)
 
+def get_include_langs():
+    """cloc language names to count, or [] to count every language cloc knows."""
+    return [lang.strip() for lang in os.environ.get("INCLUDE_LANG", "").split(",") if lang.strip()]
+
+
+def cloc_command():
+    cmd = ["cloc", "--json", "--quiet", "--exclude-dir=" + ",".join(get_exclude_dirs())]
+    langs = get_include_langs()
+    if langs:
+        cmd.append("--include-lang=" + ",".join(langs))
+    return cmd + ["."]
+
+
 def cloc_code_lines():
     """Return SUM.code from cloc JSON output."""
-    # Build --exclude-dir list
-    exclude_dirs = get_exclude_dirs()
-    exclude = "--exclude-dir=" + ",".join(exclude_dirs)
-    out = sh(["cloc", "--json", "--quiet", exclude, "."])
-    data = json.loads(out)
+    data = json.loads(sh(cloc_command()))
     return int(data.get("SUM", {}).get("code", 0))
 
 def get_commits():
