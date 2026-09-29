@@ -42,6 +42,8 @@ After the workflow has run, add the following HTML snippet to the end of your RE
 
 Use absolute URLs even though GitHub resolves relative paths: package registries such as PyPI render the same README without the repository, so a relative path shows a broken image there. PyPI also drops `<source>`, so it always shows the `<img>` fallback.
 
+In a private repository keep the relative paths `.github/loc-history-dark.svg`, `.github/loc-history-light.svg` and `.github/loc-history.svg`: `raw.githubusercontent.com` answers 404 without a token, while GitHub resolves relative paths with the viewer's access.
+
 ## Advanced Setup
 
 ```yaml
