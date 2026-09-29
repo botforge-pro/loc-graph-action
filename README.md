@@ -29,16 +29,18 @@ jobs:
       - uses: botforge-pro/loc-graph-action@main
 ```
 
-After the workflow has run, add the following HTML snippet to the end of your README to display the LOC graph with automatic theme switching:
+After the workflow has run, add the following HTML snippet to the end of your README to display the LOC graph with automatic theme switching, replacing `OWNER/REPO` with your repository:
 
 ```html
 ### Lines of Code Over Time
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/loc-history-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset=".github/loc-history-light.svg">
-  <img src=".github/loc-history.svg" alt="Lines of code over time">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/OWNER/REPO/main/.github/loc-history-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/OWNER/REPO/main/.github/loc-history-light.svg">
+  <img src="https://raw.githubusercontent.com/OWNER/REPO/main/.github/loc-history.svg" alt="Lines of code over time">
 </picture>
 ```
+
+Use absolute URLs even though GitHub resolves relative paths: package registries such as PyPI render the same README without the repository, so a relative path shows a broken image there. PyPI also drops `<source>`, so it always shows the `<img>` fallback.
 
 ## Advanced Setup
 
