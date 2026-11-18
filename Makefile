@@ -1,4 +1,4 @@
-.PHONY: install test lint clean
+.PHONY: install test lint
 
 venv:  ## Create virtual environment
 	python3 -m venv venv
@@ -14,10 +14,6 @@ lint:  ## Run linter
 
 lint-fix:  ## Run linter with auto-fix
 	./venv/bin/ruff check scripts/loc_graph.py --fix
-
-clean:  ## Clean cache files
-	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
-	find . -type f -name "*.pyc" -delete
 
 run:  ## Run the script locally (for testing)
 	THEME=dark python3 scripts/loc_graph.py
